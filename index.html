@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The six-theory mechanism of dimensional ascent: error pricing, the manufactured selector, the branching gate, the breadth-to-depth ratio, and the operator's resolution band.">
+<meta name="color-scheme" content="dark">
+<title>Low to High Dimensionality</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap">
+
+<style>
+  /* Committed single-theme design. Every plate on this page is a dark-ground
+     instrument drawing and the page is their mounting board, so all colors are
+     painted explicitly and hold on any host ground. */
+  :root {
+    --ground:   #070a11;
+    --panel:    #0c1119;
+    --panel-2:  #101723;
+    --rule:     #1c2534;
+    --rule-lit: #2b3a50;
+    --prose:    #c2cdde;
+    --dim:      #8093ad;
+    --faint:    #5c6b84;
+    --ink:      #eaeff8;
+
+    --live:     #6fe0c2;  /* compounding returns, validated survivor, inside the band */
+    --gate:     #f0bf4c;  /* the verdict, the operator, the held quantity */
+    --fail:     #e2726f;  /* unattributable, collapsed, outside the band */
+
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --serif: "Spectral", "Iowan Old Style", Georgia, "Times New Roman", serif;
+
+    --col: 66ch;
+    --plate: 1080px;
+    --wide: 1440px;
+    --step: 1.55rem;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--prose);
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: 17.5px;
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap  { max-width: var(--wide);  margin: 0 auto; padding: 0 clamp(18px, 4vw, 56px); }
+  .col   { max-width: var(--col);   margin-inline: auto; }
+  .plate-col { max-width: var(--plate); margin-inline: auto; }
+
+  a { color: var(--live); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid var(--gate); outline-offset: 3px; }
+  hr.rule { height: 1px; background: var(--rule); border: 0; margin: 0; }
+
+  /* ---------- masthead ---------- */
+
+  header.masthead { padding: clamp(56px, 9vw, 128px) 0 clamp(28px, 4vw, 52px); }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin: 0;
+  }
+
+  h1 {
+    font-family: var(--mono);
+    font-weight: 300;
+    font-size: clamp(27px, 4.6vw, 52px);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    line-height: 1.16;
+    color: var(--ink);
+    margin: 26px 0 0;
+    text-wrap: balance;
+  }
+
+  .deck {
+    margin: 24px 0 0;
+    font-size: clamp(18px, 2.2vw, 22px);
+    line-height: 1.56;
+    color: var(--dim);
+    max-width: 48ch;
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .masthead hr.rule { margin-top: clamp(36px, 5vw, 62px); }
+
+  /* ---------- generic sections ---------- */
+
+  section { padding: clamp(44px, 6vw, 90px) 0; }
+
+  .sec-mark {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gate);
+    margin: 0;
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(23px, 2.7vw, 32px);
+    line-height: 1.28;
+    color: var(--ink);
+    margin: 14px 0 0;
+    text-wrap: balance;
+  }
+
+  h3 {
+    font-family: var(--mono);
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin: 0;
+  }
+
+  p { margin: var(--step) 0 0; }
+  p:first-of-type { margin-top: 22px; }
+
+  strong { font-weight: 500; color: var(--ink); }
+  em.t { font-style: normal; color: var(--gate); }
+  em.m { font-style: normal; color: var(--live); }
+  em.f { font-style: normal; color: var(--fail); }
+
+  .lede { font-size: 20px; line-height: 1.6; color: var(--ink); }
+
+  /* citation line under a section heading */
+  .refs {
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+  }
+  .refs li { display: flex; align-items: baseline; gap: 8px; }
+  .refs .rn { color: var(--live); letter-spacing: 0.16em; }
+
+  /* ---------- the six ---------- */
+
+  .six { margin: clamp(26px, 3.4vw, 44px) 0 0; border-top: 1px solid var(--rule); }
+
+  .six-row {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 0 clamp(14px, 2vw, 30px);
+    padding: 22px 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: start;
+  }
+  .six-row .rn {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    color: var(--gate);
+    padding-top: 4px;
+  }
+  .six-row .title {
+    font-family: var(--mono);
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .six-row .gloss {
+    grid-column: 2 / -1;
+    margin: 8px 0 0;
+    font-size: 16.5px;
+    line-height: 1.6;
+    color: var(--dim);
+  }
+
+  @media (min-width: 900px) {
+    .six-row { grid-template-columns: 56px 30ch minmax(0, 1fr); align-items: baseline; }
+    .six-row .gloss { grid-column: auto; margin: 0; }
+  }
+
+  /* ---------- the spine ---------- */
+
+  .spine {
+    margin: clamp(26px, 3.4vw, 44px) 0 0;
+    display: grid;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .spine-item {
+    background: var(--panel);
+    padding: clamp(22px, 3vw, 34px) clamp(18px, 2.6vw, 34px);
+    display: grid;
+    gap: 14px;
+  }
+  .spine-item .k {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--gate);
+  }
+  .spine-item p { margin: 0; font-size: 17px; line-height: 1.66; color: var(--prose); }
+  .spine-item p .hit { color: var(--ink); font-weight: 400; }
+
+  /* ---------- plates ---------- */
+
+  figure.plate { margin: clamp(34px, 4.5vw, 58px) 0 0; }
+
+  .plate-frame {
+    border: 1px solid var(--rule);
+    background: #05070d;
+    padding: clamp(10px, 1.6vw, 20px);
+    overflow-x: auto;
+  }
+  .plate-frame svg { display: block; width: 100%; min-width: 660px; height: auto; }
+
+  figcaption {
+    padding: 18px 2px 0;
+    display: grid;
+    gap: 10px;
+  }
+  .cap-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 26px;
+    align-items: baseline;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+  }
+  .cap-head .num { color: var(--gate); letter-spacing: 0.28em; text-transform: uppercase; }
+  .cap-head .name { color: var(--ink); }
+  .cap-body {
+    max-width: 78ch;
+    font-size: 16px;
+    line-height: 1.66;
+    color: var(--dim);
+    margin: 0;
+  }
+  .cap-body em.t, .cap-body em.m, .cap-body em.f { font-style: normal; }
+
+  .keys {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 26px;
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--faint);
+  }
+  .keys li { display: flex; align-items: baseline; gap: 9px; }
+  .keys .sw { width: 9px; height: 9px; flex: none; transform: translateY(-1px); }
+  .sw.live { background: var(--live); }
+  .sw.gate { background: var(--gate); }
+  .sw.fail { background: var(--fail); }
+
+  /* ---------- two-sided comparison ---------- */
+
+  .pair {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: clamp(24px, 3.5vw, 56px);
+    margin: clamp(26px, 3.4vw, 42px) 0 0;
+  }
+  .side { border-top: 2px solid var(--rule); padding-top: 18px; }
+  .side.good { border-top-color: var(--live); }
+  .side.bad  { border-top-color: var(--fail); }
+  .side h3 { color: var(--dim); }
+  .side.good h3 { color: var(--live); }
+  .side.bad h3  { color: var(--fail); }
+  .side p { margin-top: 15px; font-size: 16.5px; line-height: 1.64; }
+
+  /* ---------- ledger table ---------- */
+
+  .table-scroll { overflow-x: auto; margin: clamp(26px, 3.4vw, 44px) 0 0; }
+
+  table { width: 100%; min-width: 880px; border-collapse: collapse; font-family: var(--mono); font-size: 13px; line-height: 1.55; }
+  thead th {
+    text-align: left;
+    font-weight: 400;
+    font-size: 10.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--faint);
+    padding: 0 24px 12px 0;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+  tbody td { vertical-align: top; padding: 16px 24px 16px 0; border-bottom: 1px solid var(--rule); color: var(--dim); }
+  tbody td:first-child { color: var(--ink); width: 24%; }
+  tbody td:nth-child(2) { color: var(--gate); width: 25%; }
+  tbody td:last-child { padding-right: 0; width: 18%; }
+  tbody tr:last-child td { border-bottom: 0; }
+  .yes { color: var(--live); }
+  .no  { color: var(--fail); }
+
+  /* ---------- pull statement ---------- */
+
+  blockquote {
+    margin: clamp(28px, 4vw, 48px) 0 0;
+    padding: clamp(28px, 4vw, 44px) 0 0;
+    border-top: 1px solid var(--rule);
+    font-size: clamp(18px, 2.1vw, 23px);
+    line-height: 1.56;
+    color: var(--ink);
+    font-weight: 300;
+  }
+  blockquote p { margin-top: 1.1rem; }
+  blockquote p:first-of-type { margin-top: 0; }
+  blockquote .tail { display: block; margin-top: 20px; font-family: var(--mono); font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gate); }
+
+  /* ---------- colophon ---------- */
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: clamp(34px, 4vw, 54px) 0 clamp(60px, 8vw, 106px);
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.9;
+    color: var(--faint);
+    letter-spacing: 0.02em;
+  }
+  footer .files { margin: 16px 0 0; display: grid; gap: 3px; }
+  footer .files span { color: var(--dim); }
+  footer .files span .rn { color: var(--gate); letter-spacing: 0.16em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="col">
+      <p class="eyebrow">Six theories · one mechanism</p>
+      <h1>Low to High Dimensionality</h1>
+      <p class="deck">Dimensionality is not a measure of how complicated a thing is. It is the price of being wrong about it — and every durable structure is one that ordered that price in time.</p>
+    </div>
+    <hr class="rule">
+  </header>
+
+  <!-- ============ THE SIX ============ -->
+  <section id="six">
+    <div class="col">
+      <p class="sec-mark">The references</p>
+      <h2>Six theories, cited throughout</h2>
+      <p>They are numbered in the order the mechanism runs, not the order they were written. Each later theory answers a question the one before it opens and cannot close: I sets the price, II explains why the ordering is forced, III gives the ascent its shape, IV and V give it its proportion, VI puts a live operator inside it.</p>
+    </div>
+
+    <div class="plate-col six">
+      <div class="six-row">
+        <span class="rn">I</span>
+        <span class="title">Unified Theory of<br>Dimensional Sequencing</span>
+        <p class="gloss">Error economics. Correct at the lowest dimensionality first; earn each new dimension only after the ones beneath it survive contact with reality.</p>
+      </div>
+      <div class="six-row">
+        <span class="rn">II</span>
+        <span class="title">The Selection Ascent</span>
+        <p class="gloss">Dimensionality is <em class="t">selector load</em>. The surface that judges is manufactured by the process it governs — so a system that starts high can never build one.</p>
+      </div>
+      <div class="six-row">
+        <span class="rn">III</span>
+        <span class="title">The Branching Gate</span>
+        <p class="gloss">The ascent's shape: expand, thicken, or fixate — decided node by node, by one economic verdict at every fork.</p>
+      </div>
+      <div class="six-row">
+        <span class="rn">IV</span>
+        <span class="title">The Regulated Ascent</span>
+        <p class="gloss">Those local verdicts summed. The proportion of <em class="m">keep going</em> to <em class="t">fixate</em> across a whole build <em>is</em> its breadth-to-depth ratio.</p>
+      </div>
+      <div class="six-row">
+        <span class="rn">V</span>
+        <span class="title">The Ratio Engine</span>
+        <p class="gloss">The ratio treated as the object itself. Both extremes fail in mirror image, and an even split fails in a third way.</p>
+      </div>
+      <div class="six-row">
+        <span class="rn">VI</span>
+        <span class="title">The Resolution Band</span>
+        <p class="gloss">The operator's ceiling on held dimensionality — and compression as the only durable move, since the ceiling will not rise.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ THE SPINE ============ -->
+  <section id="spine">
+    <div class="col">
+      <p class="sec-mark">The backbone</p>
+      <h2>The whole argument, in four movements</h2>
+      <p>Everything below is an expansion of these four statements. They are the spine of the page; the six theories are the reasoning that holds each one up. Read them once now and the rest of the page is annotation.</p>
+    </div>
+
+    <div class="plate-col spine">
+      <div class="spine-item">
+        <span class="k">I · The price</span>
+        <p>Dimensionality is <span class="hit">the price-setting mechanism for error</span>: at low dimensionality a verdict is cheap to act on and attributable to one thing, while at high dimensionality the same verdict says <em>something failed</em> without saying what — so correction costs multiply and every rejection demands unwinding committed structure.</p>
+      </div>
+      <div class="spine-item">
+        <span class="k">II · The ordering</span>
+        <p>The ascent must therefore run low to high, <span class="hit">each new dimension earned</span> only after the layers beneath it survive contact with reality — because each clean survivor deposited raises the selector's resolution, which is what makes the next tier of distinctions visible at all. A system that front-loads dimensionality has no selector to build with, and must either drop its pressure and stop adapting or hold it and come apart.</p>
+      </div>
+      <div class="spine-item">
+        <span class="k">III · The shape and the proportion</span>
+        <p>The climb is not a line but <span class="hit">a branching spiral</span> — reach, reinforce, reach again — regulated by one economic verdict at every fork (returns compounding, or diminished?), and the aggregate of those verdicts <em>is</em> the breadth-to-depth ratio, which fails identically at either extreme: never fixating scatters the structure, fixating too early locks it to a boundary that was never real.</p>
+      </div>
+      <div class="spine-item">
+        <span class="k">IV · The operator</span>
+        <p>Finally, the operator's own ceiling on held dimensionality is nearly fixed and real systems routinely demand more, so capability is governed not by how much dimensionality you can hold but by <span class="hit">how much you have already compressed away</span> — paid for in advance with dead-ends — and then by the discipline to collapse to a single line at the moment of execution.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ MOVEMENT 1 ============ -->
+  <section id="m1">
+    <div class="col">
+      <p class="sec-mark">Movement I</p>
+      <h2>The price of being wrong</h2>
+      <ul class="refs">
+        <li><span class="rn">I</span> Dimensional Sequencing</li>
+        <li><span class="rn">II</span> The Selection Ascent</li>
+      </ul>
+
+      <p class="lede">The usual reading of dimensionality treats it as a property of the structure — how many parts it has, how tightly they are coupled. That reading is not wrong so much as it is aimed at the wrong object. Dimensionality is a property of <em>the verdict</em>: how many entangled constraints must be resolved simultaneously when a single candidate is judged.</p>
+
+      <p>Move the definition to the verdict and the economics fall out immediately. In a low-dimensional state an error touches few connections. It can be isolated, pruned and repaired without disturbing distant regions, and — this is the part that matters more — the verdict that found it <em class="m">points at one thing</em>. The system knows what failed and why. In a high-dimensional state the identical verdict arrives carrying exactly the same quantity of information about a vastly larger space. It says <em class="f">something failed</em>. Selective pressure is fully present and entirely directionless.</p>
+
+      <p>The cost of correction, meanwhile, has stopped being additive. One deviation now violates many commitments at once, so repair propagates along every coupled constraint it touches. The sphere absorbs a strike locally and is re-polished cheaply; the star fractures along the stress lines connecting its vertices. The dalgona circle forgives a slipped knife; the dalgona star shatters.</p>
+
+      <p>Two properties are therefore in play, and only one regime holds both. Verdicts must be <em class="t">cheap</em> — a rejection can be acted on without unwinding committed structure. And verdicts must be <em class="t">informative</em> — a rejection points at one thing. <strong>Cheap and informative together is the only band in which selection generates structure rather than heat.</strong> Low dimensionality is not a modest starting posture. It is the only place both conditions are simultaneously available.</p>
+    </div>
+
+    <div class="plate-col">
+      <figure class="plate">
+        <div class="plate-frame">
+          <svg viewBox="0 0 900 400" role="img" aria-label="Two panels comparing a failed candidate at low dimensionality, where the verdict names one constraint and one edge must be unwound, against high dimensionality, where the same verdict lights every coupled edge and names nothing.">
+            <defs>
+              <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" fill="currentColor"></path>
+              </marker>
+            </defs>
+
+            <!-- ============ PANEL A ============ -->
+            <rect x="16" y="10" width="414" height="380" fill="#080c14" stroke="#1c2534"></rect>
+            <text x="36" y="42" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2.4" fill="#6fe0c2">LOW DIMENSIONALITY</text>
+            <text x="36" y="62" font-family="JetBrains Mono, monospace" font-size="10.5" fill="#5c6b84">three constraints, uncoupled</text>
+
+            <!-- edges -->
+            <line x1="223" y1="182" x2="223" y2="94"  stroke="#e2726f" stroke-width="2.4"></line>
+            <line x1="223" y1="182" x2="147" y2="226" stroke="#6fe0c2" stroke-width="1.6"></line>
+            <line x1="223" y1="182" x2="299" y2="226" stroke="#6fe0c2" stroke-width="1.6"></line>
+
+            <!-- constraint nodes -->
+            <rect x="211" y="82"  width="24" height="24" fill="#1a0e11" stroke="#e2726f" stroke-width="1.6"></rect>
+            <rect x="135" y="214" width="24" height="24" fill="#0c1119" stroke="#6fe0c2" stroke-width="1.4"></rect>
+            <rect x="287" y="214" width="24" height="24" fill="#0c1119" stroke="#6fe0c2" stroke-width="1.4"></rect>
+            <text x="223" y="72"  text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#e2726f">c1</text>
+            <text x="123" y="232" text-anchor="end"    font-family="JetBrains Mono, monospace" font-size="10" fill="#5c6b84">c2</text>
+            <text x="323" y="232" text-anchor="start"  font-family="JetBrains Mono, monospace" font-size="10" fill="#5c6b84">c3</text>
+
+            <!-- candidate -->
+            <circle cx="223" cy="182" r="13" fill="#0c1119" stroke="#c2cdde" stroke-width="1.6"></circle>
+            <text x="248" y="178" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">candidate</text>
+            <text x="248" y="192" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">under test</text>
+
+            <line x1="36" y1="278" x2="410" y2="278" stroke="#1c2534"></line>
+            <text x="36" y="304" font-family="JetBrains Mono, monospace" font-size="11.5" fill="#eaeff8">verdict: c1 failed</text>
+            <text x="36" y="326" font-family="JetBrains Mono, monospace" font-size="10.5" fill="#6fe0c2">attributable — it names one thing</text>
+            <text x="36" y="348" font-family="JetBrains Mono, monospace" font-size="10.5" fill="#8093ad">correction: unwind 1 edge</text>
+            <text x="36" y="370" font-family="JetBrains Mono, monospace" font-size="10.5" fill="#8093ad">deposit: 1 clean increment of structure</text>
+
+            <!-- ============ PANEL B ============ -->
+            <rect x="470" y="10" width="414" height="380" fill="#080c14" stroke="#1c2534"></rect>
+            <text x="490" y="42" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2.4" fill="#e2726f">HIGH DIMENSIONALITY</text>
+            <text x="490" y="62" font-family="JetBrains Mono, monospace" font-size="10.5" fill="#5c6b84">eight constraints, mutually coupled</text>
+
+            <!-- spokes -->
+            <g stroke="#e2726f" stroke-width="1.3" opacity="0.85">
+              <line x1="677" y1="182" x2="765" y2="182"></line>
+              <line x1="677" y1="182" x2="739" y2="120"></line>
+              <line x1="677" y1="182" x2="677" y2="94"></line>
+              <line x1="677" y1="182" x2="615" y2="120"></line>
+              <line x1="677" y1="182" x2="589" y2="182"></line>
+              <line x1="677" y1="182" x2="615" y2="244"></line>
+              <line x1="677" y1="182" x2="677" y2="270"></line>
+              <line x1="677" y1="182" x2="739" y2="244"></line>
+            </g>
+            <!-- neighbour chords -->
+            <g stroke="#e2726f" stroke-width="1" opacity="0.5" fill="none">
+              <polygon points="765,182 739,120 677,94 615,120 589,182 615,244 677,270 739,244"></polygon>
+            </g>
+            <!-- skip-one chords -->
+            <g stroke="#e2726f" stroke-width="0.9" opacity="0.32">
+              <line x1="765" y1="182" x2="677" y2="94"></line>
+              <line x1="739" y1="120" x2="615" y2="120"></line>
+              <line x1="677" y1="94"  x2="589" y2="182"></line>
+              <line x1="615" y1="120" x2="615" y2="244"></line>
+              <line x1="589" y1="182" x2="677" y2="270"></line>
+              <line x1="615" y1="244" x2="739" y2="244"></line>
+              <line x1="677" y1="270" x2="765" y2="182"></line>
+              <line x1="739" y1="244" x2="739" y2="120"></line>
+            </g>
+
+            <g fill="#1a0e11" stroke="#e2726f" stroke-width="1.4">
+              <rect x="755" y="172" width="20" height="20"></rect>
+              <rect x="729" y="110" width="20" height="20"></rect>
+              <rect x="667" y="84"  width="20" height="20"></rect>
+              <rect x="605" y="110" width="20" height="20"></rect>
+              <rect x="579" y="172" width="20" height="20"></rect>
+              <rect x="605" y="234" width="20" height="20"></rect>
+              <rect x="667" y="260" width="20" height="20"></rect>
+              <rect x="729" y="234" width="20" height="20"></rect>
+            </g>
+
+            <circle cx="677" cy="182" r="13" fill="#0c1119" stroke="#c2cdde" stroke-width="1.6"></circle>
+
+            <line x1="490" y1="300" x2="864" y2="300" stroke="#1c2534"></line>
+            <text x="490" y="326" font-family="JetBrains Mono, monospace" font-size="11.5" fill="#eaeff8">verdict: something failed</text>
+            <text x="490" y="348" font-family="JetBrains Mono, monospace" font-size="10.5" fill="#e2726f">unattributable — it names nothing</text>
+            <text x="490" y="370" font-family="JetBrains Mono, monospace" font-size="10.5" fill="#8093ad">correction: unwind every committed edge</text>
+          </svg>
+        </div>
+        <figcaption>
+          <div class="cap-head">
+            <span class="num">Plate 1</span>
+            <span class="name">The same verdict, priced twice</span>
+          </div>
+          <p class="cap-body">One candidate is rejected in each panel and the two rejections carry <em class="t">identical information content</em> — one bit, <em>failed</em>. On the left that bit resolves to a single named edge and costs one unwind. On the right it is spread across a tangle whose members are conditional on each other, so it names nothing and prices the repair at every commitment already made. The failure of the high-dimensional build is not that it is fragile; it is that its feedback has been stripped of address.</p>
+          <ul class="keys">
+            <li><span class="sw live"></span>validated / attributable</li>
+            <li><span class="sw fail"></span>implicated by the rejection</li>
+          </ul>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="col">
+      <p>This is what makes the property a <em>trajectory</em> rather than a state. Rigid designs — the fully specified plan, the high-order fit on the first pass, the finished product spec — front-load dimensionality, and in doing so they front-load correction cost precisely at the moment the system is least validated and most likely to be wrong. Iterative structures invert the order: they begin with a working core and open degrees of freedom, and let definition, density and redundancy accumulate only where feedback has repeatedly demanded them. <strong>Complexity of this kind is not designed. It is earned.</strong></p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ MOVEMENT 2 ============ -->
+  <section id="m2">
+    <div class="col">
+      <p class="sec-mark">Movement II</p>
+      <h2>Why the ordering is not a preference</h2>
+      <ul class="refs">
+        <li><span class="rn">I</span> Dimensional Sequencing</li>
+        <li><span class="rn">II</span> The Selection Ascent</li>
+      </ul>
+
+      <p class="lede">If low dimensionality is the safe place to begin, the climb out of it cannot be arbitrary. The sequencing law supplies the rule: correct error at the lowest available dimensionality before building the layers that depend on it. But cheapness is only half the reason, and the weaker half.</p>
+
+      <p>The surface reading is about cost containment. The 3D modeller blocks rough forms before sculpting detail; the puzzle solver builds the two-connection edge frame before placing four-connection interior pieces; the writer stabilises the core idea before polishing phrasing. Each validated low layer becomes a <em class="t">constraint surface</em> — a completed border — that makes errors in the next layer easier to detect and cheaper to fix. Sequencing converts past validation into future error-detection capacity.</p>
+
+      <p>The deeper reason is that the thing doing the judging is itself under construction. Every adaptive system runs on three parts: an <em class="t">engine</em> that sets the rate of testing and supplies no direction; a <em class="t">candidate</em>, a variation above baseline with no power to enforce itself; and a <em class="m">selector</em>, the surface the candidate is tested against, which decides what survives and generates nothing. The three-part decomposition tells you what the system is made of. It does not tell you how the parts move — and moving them exposes an asymmetry that changes the whole picture.</p>
+
+      <p>The cycle looks like a wheel turning in place: candidate proposed, rate applied, verdict returned, repeat. It is not a wheel. <strong>The rate spends itself and resets. The candidate is consumed in the testing. Only the selector accumulates.</strong> Every survivor is written back into the ground and becomes part of the surface that will judge the next candidate. The loop ratchets; it does not return.</p>
+
+      <p>And that accumulation is what makes the ascent possible at all. Each clean survivor written into the selector raises the selector's resolution — and a sharper selector can now discriminate candidates that were previously beneath its noise floor. Those pathways were always present in the possibility space. The selector simply could not see them, because its own resolution was too coarse to return different judgments on them. The recursion runs: a verdict at resolution <em>n</em> deposits a survivor; the selector resolves at <em>n+1</em>; candidates indistinguishable at <em>n</em> now separate cleanly; those verdicts deposit; resolution climbs again.</p>
+    </div>
+
+    <div class="plate-col">
+      <figure class="plate">
+        <div class="plate-frame">
+          <svg viewBox="0 0 900 470" role="img" aria-label="Left: the adaptive cycle as rate, candidate, selector and deposit, with only the selector accumulating. Right: a staircase in which each deposited survivor raises the selector's resolution and doubles the distinctions it can separate.">
+            <defs>
+              <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" fill="currentColor"></path>
+              </marker>
+            </defs>
+
+            <!-- ============ LEFT: the cycle ============ -->
+            <text x="30" y="40" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2.4" fill="#f0bf4c">THE CYCLE DOES NOT RETURN</text>
+
+            <g fill="#0c1119" stroke="#2b3a50" stroke-width="1.3">
+              <rect x="60"  y="86"  width="120" height="40"></rect>
+              <rect x="270" y="86"  width="120" height="40"></rect>
+              <rect x="270" y="226" width="120" height="40"></rect>
+            </g>
+            <rect x="60" y="226" width="120" height="40" fill="#0e1a19" stroke="#6fe0c2" stroke-width="1.6"></rect>
+
+            <g font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">
+              <text x="120" y="111" fill="#f0bf4c">RATE</text>
+              <text x="330" y="111" fill="#c2cdde">CANDIDATE</text>
+              <text x="330" y="251" fill="#c2cdde">SELECTOR</text>
+              <text x="120" y="251" fill="#6fe0c2">GROUND</text>
+            </g>
+
+            <g stroke="#8093ad" stroke-width="1.4" fill="none" color="#8093ad">
+              <line x1="180" y1="106" x2="262" y2="106" marker-end="url(#a2)"></line>
+              <line x1="330" y1="126" x2="330" y2="218" marker-end="url(#a2)"></line>
+              <line x1="270" y1="246" x2="188" y2="246" marker-end="url(#a2)"></line>
+            </g>
+            <line x1="120" y1="226" x2="120" y2="134" stroke="#6fe0c2" stroke-width="1.8" fill="none" marker-end="url(#a2)" color="#6fe0c2"></line>
+
+            <g font-family="JetBrains Mono, monospace" font-size="10" fill="#5c6b84">
+              <text x="221" y="98"  text-anchor="middle">sets tempo</text>
+              <text x="340" y="176" text-anchor="start">tested against</text>
+              <text x="229" y="266" text-anchor="middle">survivor</text>
+              <text x="112" y="180" text-anchor="end">written back</text>
+            </g>
+
+            <line x1="30" y1="300" x2="410" y2="300" stroke="#1c2534"></line>
+            <g font-family="JetBrains Mono, monospace" font-size="11">
+              <text x="30" y="326"><tspan fill="#f0bf4c">RATE</tspan><tspan fill="#5c6b84"> — spends itself, resets</tspan></text>
+              <text x="30" y="352"><tspan fill="#c2cdde">CANDIDATE</tspan><tspan fill="#5c6b84"> — consumed in the test</tspan></text>
+              <text x="30" y="378"><tspan fill="#6fe0c2">SELECTOR</tspan><tspan fill="#5c6b84"> — the only part that accumulates</tspan></text>
+            </g>
+            <text x="30" y="418" font-family="JetBrains Mono, monospace" font-size="10.5" fill="#8093ad">rate is renewable. memory is not.</text>
+
+            <line x1="440" y1="30" x2="440" y2="440" stroke="#1c2534"></line>
+
+            <!-- ============ RIGHT: the staircase ============ -->
+            <text x="474" y="40" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2.4" fill="#6fe0c2">EACH SURVIVOR RAISES RESOLUTION</text>
+            <text x="474" y="60" font-family="JetBrains Mono, monospace" font-size="10.5" fill="#5c6b84">the sharper surface separates what previously returned identical verdicts</text>
+
+            <text transform="translate(468,330) rotate(-90)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="1.6" fill="#5c6b84">SELECTOR RESOLUTION</text>
+
+            <g fill="#0e1a19" stroke="#6fe0c2" stroke-width="1.4">
+              <rect x="480" y="352" width="128" height="48"></rect>
+              <rect x="608" y="300" width="128" height="100"></rect>
+              <rect x="736" y="244" width="128" height="156"></rect>
+            </g>
+
+            <!-- separable distinctions above each surface -->
+            <g stroke="#6fe0c2" stroke-width="2">
+              <line x1="520" y1="336" x2="520" y2="348"></line>
+              <line x1="568" y1="336" x2="568" y2="348"></line>
+
+              <line x1="624" y1="284" x2="624" y2="296"></line>
+              <line x1="656" y1="284" x2="656" y2="296"></line>
+              <line x1="688" y1="284" x2="688" y2="296"></line>
+              <line x1="720" y1="284" x2="720" y2="296"></line>
+
+              <line x1="744" y1="228" x2="744" y2="240"></line>
+              <line x1="760" y1="228" x2="760" y2="240"></line>
+              <line x1="776" y1="228" x2="776" y2="240"></line>
+              <line x1="792" y1="228" x2="792" y2="240"></line>
+              <line x1="808" y1="228" x2="808" y2="240"></line>
+              <line x1="824" y1="228" x2="824" y2="240"></line>
+              <line x1="840" y1="228" x2="840" y2="240"></line>
+              <line x1="856" y1="228" x2="856" y2="240"></line>
+            </g>
+
+            <!-- present but beneath the floor -->
+            <g stroke="#2b3a50" stroke-width="1.5">
+              <line x1="492" y1="366" x2="492" y2="376"></line>
+              <line x1="508" y1="366" x2="508" y2="376"></line>
+              <line x1="524" y1="366" x2="524" y2="376"></line>
+              <line x1="540" y1="366" x2="540" y2="376"></line>
+              <line x1="556" y1="366" x2="556" y2="376"></line>
+              <line x1="572" y1="366" x2="572" y2="376"></line>
+              <line x1="588" y1="366" x2="588" y2="376"></line>
+              <line x1="604" y1="366" x2="604" y2="376"></line>
+            </g>
+            <text x="544" y="392" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5c6b84">present, unresolvable</text>
+
+            <line x1="480" y1="400" x2="870" y2="400" stroke="#2b3a50" stroke-width="1.4"></line>
+            <g font-family="JetBrains Mono, monospace" font-size="10.5" fill="#8093ad" text-anchor="middle">
+              <text x="544" y="420">n</text>
+              <text x="672" y="420">n+1</text>
+              <text x="800" y="420">n+2</text>
+            </g>
+            <text x="675" y="442" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#5c6b84">one clean survivor deposited per step</text>
+            <text x="864" y="214" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6fe0c2">separable at this resolution</text>
+          </svg>
+        </div>
+        <figcaption>
+          <div class="cap-head">
+            <span class="num">Plate 2</span>
+            <span class="name">The ratchet and the curriculum</span>
+          </div>
+          <p class="cap-body">Left: the three parts move asymmetrically, and that asymmetry is the whole reason the loop climbs. Rate is spent and reissued; the candidate is destroyed by the test; only what survives is written into the ground. Right: the consequence. Each deposit raises the surface, and every rise brings a finer set of distinctions above the noise floor — the grey ticks buried in the first block are pathways that existed all along and simply could not be told apart. <strong>Thickening does not close the search; it sharpens the instrument that finds the next thing worth searching for.</strong></p>
+          <ul class="keys">
+            <li><span class="sw live"></span>accumulates across cycles</li>
+            <li><span class="sw gate"></span>resets each cycle</li>
+          </ul>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="col">
+      <h3>The ascent is the selector's training curriculum</h3>
+      <p>This reframes the ordering rule entirely. Running low to high is not a stylistic preference about building carefully — it is <strong>the only sequence in which the selector can be built at all</strong>. No system can import a finished selector from outside, because a selector is by definition the accumulated record of judgments already made. It has to be grown by the process it governs.</p>
+
+      <p>Which means the failure at high initial dimensionality is not a matter of degree. At every branch point, the system runs one economic question: is continued iteration here returning substantially, or has it gone diminishing? That is a ratio — value of further iteration over cost of correcting an error here — and it is also, read from the other direction, the selector's tolerance. Raise dimensionality before the selector exists and the denominator explodes. <em class="f">The ratio collapses toward zero on every branch simultaneously</em>, which the gate reads — correctly — as diminishing returns everywhere. The gate is not malfunctioning. It is returning the honest verdict that nothing here is worth iterating on, because the build was economically dead before it began.</p>
+
+      <div class="pair">
+        <div class="side bad">
+          <h3>Exit one — drop the pressure</h3>
+          <p>Lower the bar until nothing is rejected. The engine spends rate forever, the selector never accumulates, and adaptation stops. The system stays busy and stops moving.</p>
+        </div>
+        <div class="side bad">
+          <h3>Exit two — hold the pressure</h3>
+          <p>Keep rejecting. Each rejection now demands unwinding large committed regions, and the structure fails wholesale. Correction has become unaffordable.</p>
+        </div>
+      </div>
+
+      <p>The intermediate case is worse than either exit. Pressure held, verdicts unattributable, and <em class="f">noise written into the selector as law</em> — where, because the selector is path-dependent, it becomes the binding criterion for every judgment that follows. The system does not merely fail; it acquires a permanent, confident, wrong standard for what counts as success.</p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ MOVEMENT 3 ============ -->
+  <section id="m3">
+    <div class="col">
+      <p class="sec-mark">Movement III</p>
+      <h2>The shape of the climb, and the verdict that steers it</h2>
+      <ul class="refs">
+        <li><span class="rn">III</span> The Branching Gate</li>
+        <li><span class="rn">IV</span> The Regulated Ascent</li>
+      </ul>
+
+      <p class="lede">The ordering rule says which direction to climb. It says nothing about the shape of the climb or when it should stop. The rise from low to high dimensionality is not a line — it is a branching structure driven by two operations that pull against each other, and arbitrated at every fork by a single binary verdict.</p>
+
+      <p>The first operation is <em class="m">expansion</em>: the raising of dimensionality. It opens new arms — new components, new pathways, new constraints to evaluate — and it is how the structure reaches into possibility it has not yet touched. In the vocabulary of Movement II, expansion is candidate generation.</p>
+
+      <p>The second is <em class="t">thickening</em>: the validation and reinforcement of a chosen arm. It selects, compresses and solidifies, locking in a foundation before more complexity is committed. Thickening is what keeps error cheap, because it establishes a proven layer that everything above can safely rest on. In the vocabulary of Movement II, thickening is selector accumulation. <strong>These are not two theories describing similar processes. They are one process described in two vocabularies.</strong></p>
+
+      <p>The crucial property has already been established by the staircase: thickening does not end expansion, it <em>enables</em> it. Each reinforced branch acts as a completed reference frame that both cheapens every choice above it and reveals a set of finer, higher-resolution pathways that were previously too noisy to perceive. So growth proceeds as a recursion — reach, reinforce, reach again from the reinforced arm — climbing in resolution with each pass. A finished outer border makes the interior tractable. A validated rough form makes fine detail safe to pursue. A committed framework makes its subtle variations finally visible.</p>
+
+      <p>But not every branch is worth extending, and not every pathway a thickening reveals is worth pursuing. A structure that grows every possible arm forever becomes scattered and fragile; one that stops too early stays low-resolution and blind to its best pathways. Something must decide, at each node, whether to grow. That is the gate.</p>
+    </div>
+
+    <div class="plate-col">
+      <figure class="plate">
+        <div class="plate-frame">
+          <svg viewBox="0 0 900 470" role="img" aria-label="A validated branch reaches a gate that asks whether returns are still compounding. Keep going thickens the branch and reveals two finer pathways, feeding a recursion back to the gate. Fixate caps the branch and frees its effort. Two red notes mark the misfires in each direction.">
+            <defs>
+              <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" fill="currentColor"></path>
+              </marker>
+            </defs>
+
+            <!-- recursion arc (drawn first so it sits behind) -->
+            <path d="M 796 140 C 700 44, 430 56, 336 208" fill="none" stroke="#f0bf4c" stroke-width="1.4" stroke-dasharray="6 5" opacity="0.85" marker-end="url(#a3)" color="#f0bf4c"></path>
+            <text x="566" y="52" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" fill="#f0bf4c">recursion — reach, reinforce, reach again</text>
+
+            <!-- trunk -->
+            <text x="40" y="232" font-family="JetBrains Mono, monospace" font-size="10.5" fill="#5c6b84">validated branch</text>
+            <line x1="40" y1="250" x2="150" y2="250" stroke="#6fe0c2" stroke-width="9" stroke-linecap="butt"></line>
+            <circle cx="150" cy="250" r="6" fill="#6fe0c2"></circle>
+            <line x1="157" y1="250" x2="232" y2="250" stroke="#8093ad" stroke-width="1.4" marker-end="url(#a3)" color="#8093ad"></line>
+
+            <!-- gate -->
+            <rect x="240" y="214" width="176" height="72" fill="#0c1119" stroke="#f0bf4c" stroke-width="1.6"></rect>
+            <text x="328" y="242" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2.2" fill="#f0bf4c">THE GATE</text>
+            <text x="328" y="264" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">returns still compounding?</text>
+
+            <!-- keep going -->
+            <polyline points="416,238 460,238 460,164 492,164" fill="none" stroke="#6fe0c2" stroke-width="1.6" marker-end="url(#a3)" color="#6fe0c2"></polyline>
+            <text x="500" y="146" font-family="JetBrains Mono, monospace" font-size="11.5" letter-spacing="1.6" fill="#6fe0c2">KEEP GOING</text>
+            <line x1="500" y1="164" x2="640" y2="164" stroke="#6fe0c2" stroke-width="9"></line>
+            <text x="500" y="192" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">thicken · resolution rises</text>
+            <line x1="640" y1="164" x2="764" y2="118" stroke="#6fe0c2" stroke-width="2.2"></line>
+            <line x1="640" y1="164" x2="764" y2="210" stroke="#6fe0c2" stroke-width="2.2"></line>
+            <circle cx="766" cy="117" r="4.5" fill="#6fe0c2"></circle>
+            <circle cx="766" cy="211" r="4.5" fill="#6fe0c2"></circle>
+            <text x="778" y="106" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">new pathways</text>
+            <text x="778" y="216" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">that were noise</text>
+            <text x="778" y="230" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">one pass ago</text>
+
+            <!-- fixate -->
+            <polyline points="416,262 460,262 460,344 492,344" fill="none" stroke="#f0bf4c" stroke-width="1.6" marker-end="url(#a3)" color="#f0bf4c"></polyline>
+            <text x="500" y="326" font-family="JetBrains Mono, monospace" font-size="11.5" letter-spacing="1.6" fill="#f0bf4c">FIXATE</text>
+            <line x1="500" y1="344" x2="620" y2="344" stroke="#f0bf4c" stroke-width="9" opacity="0.55"></line>
+            <line x1="622" y1="326" x2="622" y2="362" stroke="#f0bf4c" stroke-width="5"></line>
+            <text x="500" y="380" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">correction cost now exceeds return</text>
+            <text x="500" y="398" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">leaves the active loop; becomes a stable reference</text>
+            <text x="500" y="416" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">its effort is freed for search elsewhere</text>
+
+            <!-- misfires -->
+            <line x1="40" y1="318" x2="430" y2="318" stroke="#1c2534"></line>
+            <text x="40" y="346" font-family="JetBrains Mono, monospace" font-size="11" fill="#e2726f">MISFIRE ↑ never returns FIXATE</text>
+            <text x="40" y="366" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">every arm stays open · nothing load-bearing</text>
+            <text x="40" y="400" font-family="JetBrains Mono, monospace" font-size="11" fill="#e2726f">MISFIRE ↓ fixates while returns compound</text>
+            <text x="40" y="420" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">locked to a boundary that was never real</text>
+          </svg>
+        </div>
+        <figcaption>
+          <div class="cap-head">
+            <span class="num">Plate 3</span>
+            <span class="name">One verdict, run at every fork</span>
+          </div>
+          <p class="cap-body">The gate is binary and it is <em class="t">local</em> — it is never run once, globally, at the start of a build. A system does not decide up front how deep to go; it decides, branch by branch, whether the next increment of dimensionality is worth its correction cost. Note where the recursion closes: <em class="m">keep going</em> thickens, thickening reveals finer arms, and those arms arrive back at the same gate one resolution higher. The two red notes are the only two ways this can fail, and both are misclassifications of return rather than errors of effort.</p>
+          <ul class="keys">
+            <li><span class="sw live"></span>live branch · returns compounding</li>
+            <li><span class="sw gate"></span>the verdict · a fixated branch</li>
+            <li><span class="sw fail"></span>the gate run inaccurately</li>
+          </ul>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="col">
+      <h3>Fixation is a move, not a defeat</h3>
+      <p>The half of the verdict that gets misread is <em class="t">fixate</em>. When returns have gone diminishing, the constraint has become structural for the purposes of this build: its correction cost now exceeds the value of continued iteration. Stopping there is the correct economic move, and it does three distinct things. It stops energy leaking into a branch that can no longer yield. It removes the internal label of <em>unfinished problem</em> that generates background resistance and repeated replay. And it forces the system's working model to update to the true state of the structure, so all further planning proceeds from an accurate map rather than a preferred one.</p>
+
+      <p>A fixated branch then becomes exactly what a thickened branch becomes — a stable reference that constrains and cheapens everything built after it. The two verdicts are not build and abandon. They are <strong>two ways of converting an open arm into settled ground</strong>, chosen by whether there is anything left to extract.</p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ MOVEMENT 4 ============ -->
+  <section id="m4">
+    <div class="col">
+      <p class="sec-mark">Movement IV</p>
+      <h2>The ratio is the object</h2>
+      <ul class="refs">
+        <li><span class="rn">V</span> The Ratio Engine</li>
+        <li><span class="rn">IV</span> The Regulated Ascent</li>
+      </ul>
+
+      <p class="lede">Step back from the individual fork to the altitude of the whole build, and the sequence of verdicts resolves into something measurable: a proportion. What fraction of total effort went to widening, and what fraction to deepening. This is the same branching geometry seen from above — and at that altitude, performance is governed entirely by where the proportion sits.</p>
+
+      <p>Both extremes fail, and they fail in mirror image. Push allocation toward pure <em class="m">breadth</em> and the structure never resolves anything: it keeps opening branches, jumping between directions, accumulating options it never commits to. Enormous reach, no strength — many weak arms, no reinforced core, and a silently rising cost, because nothing is validated and the system is carrying a growing mass of unsupported possibility. Collapse allocation toward pure <em class="t">depth</em> and the structure commits too early and too narrowly, locking onto the first viable branch and pouring everything into it without ever testing whether a better pathway existed. Rigid, low-resolution, optimised around a direction it never stress-tested — and, because deepening is what reveals the next pathways, permanently blind to the higher-value options its own progress exposed.</p>
+
+      <p>The instructive part is that the optimum is <strong>not a balanced fifty-fifty</strong>. An even split lets the two modes interfere. The system oscillates fast enough that neither completes: depth is repeatedly interrupted by fresh divergence, breadth repeatedly cut short by premature commitment, and transition overhead bleeds energy the entire time. The efficient operating band is <em>asymmetric</em>, weighted toward resolution — because depth is what compounds and validates, while a narrow reserved band of search is what keeps the system from committing blind. Enough depth to compound; enough breadth to stay corrigible.</p>
+    </div>
+
+    <div class="plate-col">
+      <figure class="plate">
+        <div class="plate-frame">
+          <svg viewBox="0 0 900 400" role="img" aria-label="An allocation axis from all breadth to all depth. Three red failure zones sit at pure breadth, an even fifty-fifty split, and pure depth. The efficient band is a teal region skewed toward depth, and it is shown as the aggregate of a strip of local keep-going and fixate verdicts.">
+            <defs>
+              <marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" fill="currentColor"></path>
+              </marker>
+            </defs>
+
+            <!-- verdict strip -->
+            <text x="637" y="76" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" letter-spacing="1.8" fill="#5c6b84">LOCAL VERDICTS, NODE BY NODE</text>
+            <g>
+              <rect x="520" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+              <rect x="532" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+              <rect x="544" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+              <rect x="556" y="94" width="5" height="24" fill="#f0bf4c"></rect>
+              <rect x="568" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+              <rect x="580" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+              <rect x="592" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+              <rect x="604" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+              <rect x="616" y="94" width="5" height="24" fill="#f0bf4c"></rect>
+              <rect x="628" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+              <rect x="640" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+              <rect x="652" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+              <rect x="664" y="94" width="5" height="24" fill="#f0bf4c"></rect>
+              <rect x="676" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+              <rect x="688" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+              <rect x="700" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+              <rect x="712" y="94" width="5" height="24" fill="#f0bf4c"></rect>
+              <rect x="724" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+              <rect x="736" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+              <rect x="748" y="94" width="5" height="24" fill="#6fe0c2"></rect>
+            </g>
+            <text x="637" y="142" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">their proportion is the global ratio</text>
+            <line x1="637" y1="152" x2="637" y2="196" stroke="#8093ad" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#a4)" color="#8093ad"></line>
+
+            <!-- zones -->
+            <rect x="90"  y="214" width="76"  height="32" fill="#e2726f" opacity="0.18"></rect>
+            <rect x="424" y="214" width="92"  height="32" fill="#e2726f" opacity="0.18"></rect>
+            <rect x="774" y="214" width="76"  height="32" fill="#e2726f" opacity="0.18"></rect>
+            <rect x="561" y="200" width="152" height="46" fill="#6fe0c2" opacity="0.16" stroke="#6fe0c2" stroke-width="1.3"></rect>
+            <text x="637" y="188" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11.5" letter-spacing="1.8" fill="#6fe0c2">EFFICIENT BAND</text>
+
+            <!-- axis -->
+            <line x1="90" y1="246" x2="850" y2="246" stroke="#2b3a50" stroke-width="1.4"></line>
+            <g stroke="#2b3a50" stroke-width="1.2">
+              <line x1="90"  y1="246" x2="90"  y2="254"></line>
+              <line x1="280" y1="246" x2="280" y2="254"></line>
+              <line x1="470" y1="246" x2="470" y2="254"></line>
+              <line x1="660" y1="246" x2="660" y2="254"></line>
+              <line x1="850" y1="246" x2="850" y2="254"></line>
+            </g>
+            <g font-family="JetBrains Mono, monospace" font-size="10" fill="#5c6b84">
+              <text x="90"  y="270" text-anchor="start">all breadth</text>
+              <text x="470" y="270" text-anchor="middle">50 / 50</text>
+              <text x="850" y="270" text-anchor="end">all depth</text>
+            </g>
+
+            <!-- failure labels -->
+            <g font-family="JetBrains Mono, monospace">
+              <text x="90" y="302" font-size="11" fill="#e2726f">SCATTER</text>
+              <text x="90" y="320" font-size="10" fill="#8093ad">many weak arms;</text>
+              <text x="90" y="336" font-size="10" fill="#8093ad">unvalidated cost rising</text>
+
+              <text x="470" y="302" font-size="11" fill="#e2726f" text-anchor="middle">INTERFERENCE</text>
+              <text x="470" y="320" font-size="10" fill="#8093ad" text-anchor="middle">neither mode completes;</text>
+              <text x="470" y="336" font-size="10" fill="#8093ad" text-anchor="middle">transition overhead bleeds</text>
+
+              <text x="850" y="302" font-size="11" fill="#e2726f" text-anchor="end">FIXATION</text>
+              <text x="850" y="320" font-size="10" fill="#8093ad" text-anchor="end">rigid, low-resolution;</text>
+              <text x="850" y="336" font-size="10" fill="#8093ad" text-anchor="end">blind to its own pathways</text>
+            </g>
+
+            <!-- drift -->
+            <text x="630" y="362" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#5c6b84">the band drifts toward depth as switching cost rises</text>
+            <line x1="524" y1="380" x2="738" y2="380" stroke="#f0bf4c" stroke-width="1.4" marker-end="url(#a4)" color="#f0bf4c"></line>
+            <text x="514" y="384" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#f0bf4c">early build</text>
+            <text x="748" y="384" text-anchor="start" font-family="JetBrains Mono, monospace" font-size="10" fill="#f0bf4c">late build</text>
+          </svg>
+        </div>
+        <figcaption>
+          <div class="cap-head">
+            <span class="num">Plate 4</span>
+            <span class="name">Three ways to lose an allocation</span>
+          </div>
+          <p class="cap-body">The two ends are the familiar failures; the centre is the one that gets mistaken for balance. The teal band sits deliberately off-centre because depth is the mode that compounds, and the strip above shows why: <strong>the global ratio is nothing more than the tally of local verdicts</strong> — sixteen <em class="m">keep going</em> to four <em class="t">fixate</em> — and a well-run gate returns <em class="m">keep going</em> wherever returns genuinely compound, which on a healthy branch is often. The asymmetry seen from above is the statistical shadow of accurate classification below.</p>
+          <ul class="keys">
+            <li><span class="sw live"></span>keep going · allocate to depth</li>
+            <li><span class="sw gate"></span>fixate · frees effort for breadth</li>
+            <li><span class="sw fail"></span>a starved mode</li>
+          </ul>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="col">
+      <h3>The unification, stated exactly</h3>
+      <p>A proportion is not a mechanism. Something has to set it in real time, and it cannot be set globally in advance, because the structure does not know up front how deep it should build. This is where the two altitudes fuse: <strong>the global ratio is the aggregate of the local verdicts, and each local verdict is the ratio made adaptive at a single point.</strong> When the gate returns <em class="m">keep going</em>, it is allocating the next increment of effort to deepening. When it returns <em class="t">fixate</em>, it closes one branch and frees that effort to be spent widening elsewhere.</p>
+
+      <p>Which collapses the failure modes of both altitudes into one fault. Widening forever is a gate that never returns <em>fixate</em> when it should. Deepening too early is a gate that returns <em>fixate</em> while returns are still substantial. Both are misclassifications of return; both are the same drift of the ratio to a starving extreme. This is why neither <em>explore more</em> nor <em>commit harder</em> is ever the real remedy. The failure is never that a structure searched or resolved too much in some absolute sense — it is that the verdict driving the allocation was run inaccurately.</p>
+
+      <p>One asymmetry survives the collapse, and it is the sharpest practical claim on this page. <strong>The two failures are not equal in severity.</strong> Over-expansion wastes rate, and rate is renewable — it resets every cycle. Premature fixation corrupts memory, and memory is the only part of the system that does not reset. A system can recover from having searched too long. It cannot recover from having written the wrong thing into the surface that decides what writing is correct.</p>
+
+      <p>Mastery, then, is neither raw exploratory power nor raw capacity to grind depth. It is the continuous, accurate regulation of the verdict: knowing when a branch's returns have genuinely exhausted so it can be fixated and its energy redeployed, and when a validated direction still compounds and deserves concentrated resolution. Early in a build, when little is validated and the possibility space is wide, accurate verdicts tilt the aggregate slightly toward breadth — committing blind is expensive and search is cheap when nothing is yet built. As foundations accumulate and switching costs rise, they tilt it toward depth. The discipline is identical throughout: run the verdict honestly at every fork, and resist the pull toward either limit.</p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ MOVEMENT 5 ============ -->
+  <section id="m5">
+    <div class="col">
+      <p class="sec-mark">Movement V</p>
+      <h2>The operator's ceiling, and the only move that clears it</h2>
+      <ul class="refs">
+        <li><span class="rn">VI</span> The Resolution Band</li>
+      </ul>
+
+      <p class="lede">Every movement so far has described the structure. This one puts a live operator inside it — and discovers that the same variable, dimensionality, now has two independent values that must be matched: what the system demands, and what the operator can hold.</p>
+
+      <p>The first quantity belongs to the system. Constraints in complex environments are not a list of independent hurdles; they are a tangle of conditional relationships in which the allowable movement of one component depends on the exact current state of several others. Certain transitions open only when multiple components sit in specific configurations <em>at the same moment</em>. That co-satisfaction requirement is the system's <em class="f">coupling depth</em>. It is structural, invisible from surface observation, and it does not care whether anyone can perceive it.</p>
+
+      <p>The second belongs to the operator. Analysis can hold several chains active and coupled rather than collapsing them into one dominant signal, and each chain held open is a free parameter that adds resolution — the ability to track interactions, second-order consequences, effects invisible to a single-signal reading. But held parameters do not stay separable. Movement along one axis shifts the admissible values of the others, and past roughly the second or third chain this interdeterminacy compounds faster than the added resolution repays. <strong>The ceiling is not a matter of intelligence or effort. It is where entanglement overtakes signal.</strong></p>
+
+      <p>Match the two quantities and the structure of successful navigation appears. Below the demand, the operator reads a coupled gate as a set of independent or sequential steps; actions are structurally misaligned rather than merely unlucky, and the attempts produce dead-end states that <em>feel like movement</em>, because partial progress in one dimension frequently tightens constraints in another. The operator experiences continued activity with no advance and concludes the system is arbitrary, resistant, or rigged. It is none of those. It is being read at insufficient dimensionality. Above the ceiling, the failure inverts: the operator is now generating structure rather than reading it — possible motives, possible counter-moves, possible long-horizon positioning, each semi-dependent on the others, none resolvable. The model fits noise, producing confident, richly detailed, wrong predictions, and then paralysis, because a model with too many live parameters cannot select an action.</p>
+    </div>
+
+    <div class="plate-col">
+      <figure class="plate">
+        <div class="plate-frame">
+          <svg viewBox="0 0 900 480" role="img" aria-label="A dimensionality axis with a fixed operator ceiling at three chains. Three real gates demand four, five and six simultaneous variables and stand above the ceiling, unreadable. A compression arrow lowers the same three gates to one or two chains, inside the band, and a final single line marks collapse at execution.">
+            <defs>
+              <marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0 0 L10 5 L0 10 z" fill="currentColor"></path>
+              </marker>
+            </defs>
+
+            <!-- regions -->
+            <rect x="100" y="74"  width="770" height="168" fill="#e2726f" opacity="0.05"></rect>
+            <rect x="100" y="242" width="770" height="168" fill="#6fe0c2" opacity="0.05"></rect>
+            <text x="862" y="92"  text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#e2726f">above the ceiling — the model fits noise</text>
+            <text x="862" y="400" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="10" fill="#6fe0c2">inside the band — prediction is possible</text>
+
+            <!-- axis -->
+            <line x1="100" y1="410" x2="100" y2="58" stroke="#2b3a50" stroke-width="1.4"></line>
+            <g font-family="JetBrains Mono, monospace" font-size="10" fill="#5c6b84" text-anchor="end">
+              <text x="92" y="358">1</text>
+              <text x="92" y="302">2</text>
+              <text x="92" y="246">3</text>
+              <text x="92" y="190">4</text>
+              <text x="92" y="134">5</text>
+              <text x="92" y="78">6</text>
+            </g>
+            <text transform="translate(58,242) rotate(-90)" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="1.6" fill="#5c6b84">CHAINS HELD / DEMANDED</text>
+
+            <!-- ceiling -->
+            <line x1="100" y1="242" x2="870" y2="242" stroke="#f0bf4c" stroke-width="2.4"></line>
+            <text x="112" y="232" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="1.6" fill="#f0bf4c">OPERATOR CEILING — nearly fixed; it does not rise with effort</text>
+
+            <!-- demand as encountered -->
+            <g fill="#e2726f" fill-opacity="0.14" stroke="#e2726f" stroke-width="1.4">
+              <rect x="128" y="130" width="44" height="280"></rect>
+              <rect x="208" y="186" width="44" height="224"></rect>
+              <rect x="288" y="74"  width="44" height="336"></rect>
+            </g>
+            <g font-family="JetBrains Mono, monospace" font-size="9.5" fill="#8093ad" text-anchor="middle">
+              <text x="150" y="428">approval</text>
+              <text x="230" y="428">fault</text>
+              <text x="310" y="428">response</text>
+            </g>
+            <text x="128" y="452" font-family="JetBrains Mono, monospace" font-size="10.5" letter-spacing="1.4" fill="#e2726f">DEMAND AS ENCOUNTERED</text>
+
+            <!-- compression -->
+            <line x1="400" y1="150" x2="400" y2="330" stroke="#f0bf4c" stroke-width="3.4" marker-end="url(#a5)" color="#f0bf4c"></line>
+            <text x="400" y="132" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11.5" letter-spacing="1.8" fill="#f0bf4c">COMPRESSION</text>
+            <text x="418" y="196" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">four couplings</text>
+            <text x="418" y="212" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">become one object</text>
+            <text x="400" y="356" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">the demand falls</text>
+            <text x="400" y="372" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#8093ad">the ceiling never moves</text>
+
+            <!-- after compression -->
+            <g fill="#6fe0c2" fill-opacity="0.14" stroke="#6fe0c2" stroke-width="1.4">
+              <rect x="588" y="298" width="44" height="112"></rect>
+              <rect x="668" y="354" width="44" height="56"></rect>
+              <rect x="748" y="298" width="44" height="112"></rect>
+            </g>
+            <g font-family="JetBrains Mono, monospace" font-size="9.5" fill="#8093ad" text-anchor="middle">
+              <text x="610" y="428">approval</text>
+              <text x="690" y="428">fault</text>
+              <text x="770" y="428">response</text>
+            </g>
+            <text x="588" y="452" font-family="JetBrains Mono, monospace" font-size="10.5" letter-spacing="1.4" fill="#6fe0c2">THE SAME GATES, COMPRESSED</text>
+
+            <!-- execution -->
+            <line x1="838" y1="410" x2="838" y2="354" stroke="#eaeff8" stroke-width="7"></line>
+            <text x="838" y="342" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#eaeff8">one line</text>
+            <text x="838" y="428" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#8093ad">execute</text>
+
+            <line x1="100" y1="410" x2="870" y2="410" stroke="#2b3a50" stroke-width="1.4"></line>
+          </svg>
+        </div>
+        <figcaption>
+          <div class="cap-head">
+            <span class="num">Plate 5</span>
+            <span class="name">The band, and the only wall that moves</span>
+          </div>
+          <p class="cap-body">The upper wall is set by the operator and the lower wall by the system, and they do not move at the same rate. Institutional approval gated on relationship state plus timing plus phrasing plus political cover; a fault that reproduces only when several subsystems sit in exact intermediate states; another person's response determined by the intersection of mood, framing, self-perception and history — these routinely demand four, five or six. <strong>For most consequential systems the demand exceeds the ceiling, so raw cognition is structurally insufficient.</strong> The other remedy — hold more — exists, but it is capped low and unstable; only compression changes which gates are visible at all.</p>
+          <ul class="keys">
+            <li><span class="sw fail"></span>demanded depth, above what can be held</li>
+            <li><span class="sw gate"></span>the ceiling · the move that lowers demand</li>
+            <li><span class="sw live"></span>demanded depth, inside the band</li>
+          </ul>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="col">
+      <h3>The lower wall is fixed in the system, not in the model</h3>
+      <p>This is the hinge of the entire mechanism. Repeated deliberate exposure — systematic testing, mapped failures, prior encounters with the same class of constraint structure — converts a set of couplings into a single internalised object. The gate does not become simpler; it still requires the same four components in the same simultaneous configuration. But it no longer costs four parameter slots to represent. It costs one. <strong>Compression does not raise the ceiling; it lowers the demand beneath it.</strong></p>
+
+      <p>Which inverts the intuitive account of expertise. Skilled operators are not holding more open chains than everyone else. They are holding <em>fewer</em>, because most of what a novice must carry as live interacting variables has already been absorbed into a single unit that fires as one recognition. The expert reads a first-order situation where the novice faces a fourth-order one, and the expert's move looks like intuition precisely because the dimensionality was paid down in advance rather than in the moment.</p>
+
+      <p>And the currency of that payment is <em class="f">dead-ends</em>. Failed configurations are the only mechanism by which hidden interdependencies become visible; each one localises a coupling. Read as frustration, they are waste. Read as measurement, they are the sole path across. The difference between an operator who eventually moves through a gated system and one who remains stuck is almost entirely whether failure states were treated as data — which is the same claim Movement I made about verdicts, arriving from the other end of the mechanism.</p>
+
+      <h3 style="margin-top: 2.4rem;">Then the collapse</h3>
+      <p>Reading and acting demand opposite settings. Discovery requires the highest stable dimensionality — enough open chains to catch the coupling. Execution requires the reverse: transition windows are narrow, and holding a configuration through one demands undivided precision. Any parameter still live during the critical moment introduces deviation, and small deviation returns the system to a locked state.</p>
+
+      <p>So the full cycle is: expand to the top of the band, read the structure, then <strong>collapse hard into clean single-line execution</strong>. Hesitation at the gate is not caution. It is a failure to collapse — an operator still running discovery-mode dimensionality during a phase that punishes it.</p>
+
+      <p>The mechanism also sorts populations without any intent to do so. Because the ceiling is common and compression is expensive, gated systems concentrate leverage at the few nodes carrying high-fidelity models, while everyone else receives the same environment as noise. The stratification is informational, not conspiratorial. And it yields a precise diagnostic: <em>when a system feels arbitrary, demanded depth currently exceeds effective held depth.</em> Raise what you hold and you get through the next gate. Lower what the system demands and you change which gates you can see.</p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ THE LEDGER ============ -->
+  <section id="ledger">
+    <div class="col">
+      <p class="sec-mark">The failure ledger</p>
+      <h2>Six ways to lose, and which of them you can come back from</h2>
+      <p>Every failure in the six theories is a misplacement of dimensionality — either in the structure's ordering or in the operator's reading. What separates them is not severity of symptom but whether the damage landed on something renewable.</p>
+    </div>
+
+    <div class="plate-col table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Failure</th>
+            <th>Where it went wrong</th>
+            <th>What it costs</th>
+            <th>Recoverable</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Front-loaded dimensionality</td>
+            <td>The verdict never had a chance to be attributable</td>
+            <td>The ratio collapses on every branch at once; correction is unaffordable before the first test</td>
+            <td class="no">No — dead before it began</td>
+          </tr>
+          <tr>
+            <td>Expand forever, never reinforce</td>
+            <td>The gate never returns <em>fixate</em></td>
+            <td>Rate spent, no memory accumulated; many weak arms and no load-bearing core</td>
+            <td class="yes">Yes — rate is renewable</td>
+          </tr>
+          <tr>
+            <td>Fixate while returns compound</td>
+            <td>The gate returns <em>fixate</em> on a live branch</td>
+            <td>A boundary that was never real is written into the selector and binds every later verdict</td>
+            <td class="no">No — memory does not reset</td>
+          </tr>
+          <tr>
+            <td>An even 50/50 allocation</td>
+            <td>The verdicts run, but nothing completes</td>
+            <td>Depth interrupted, breadth cut short, transition overhead bleeding throughout</td>
+            <td class="yes">Yes — a tuning fault</td>
+          </tr>
+          <tr>
+            <td>Held depth below demand</td>
+            <td>A coupled gate is read as sequential steps</td>
+            <td>Dead-ends that feel like movement; the conclusion that the system is rigged</td>
+            <td class="yes">Yes — by compression</td>
+          </tr>
+          <tr>
+            <td>Held depth above the ceiling</td>
+            <td>The operator generates structure instead of reading it</td>
+            <td>Confident, detailed, wrong predictions — then paralysis, because nothing resolves</td>
+            <td class="yes">Yes — by collapsing</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ CLOSE ============ -->
+  <section id="close">
+    <div class="col">
+      <p class="sec-mark">Unified statement</p>
+      <h2>One mechanism, read at four altitudes</h2>
+
+      <blockquote>
+        <p>Dimensionality prices error, so the ascent runs low to high — not as a preference for caution but because each cheap, attributable verdict deposits a survivor into the selector, and the selector is the only thing that accumulates. That accumulation raises resolution, resolution reveals the next tier of distinctions, and the climb proceeds as a branching spiral rather than a line.</p>
+        <p>At every fork one economic verdict decides whether the branch keeps compounding or becomes settled ground, and the tally of those verdicts is the breadth-to-depth ratio the whole build is judged by. Both of its extremes fail, and so does its midpoint.</p>
+        <p>And an operator standing inside all of this holds a ceiling that will not rise — so what determines capability is never how much dimensionality can be carried into the moment, but how much was compressed away beforehand, in dead-ends, and whether it can be dropped to a single line when the window opens.</p>
+        <span class="tail">The order of the ascent is not a preference — it is the only sequence in which a system can build the selector that decides what it is capable of becoming.</span>
+      </blockquote>
+    </div>
+  </section>
+
+  <footer>
+    <div class="col">
+      <div>SOURCES · CLAUDE ARCHITECTURE</div>
+      <div class="files">
+        <span><span class="rn">I</span> &nbsp;Unified Theory of Dimensional Sequencing — Error Economics in Iterative Systems</span>
+        <span><span class="rn">II</span> &nbsp;The Selection Ascent — How Iterative Geometry Manufactures the Selector That Governs It</span>
+        <span><span class="rn">III</span> &nbsp;The Branching Gate — How Iterative Structures Grow, Deepen, or Terminate</span>
+        <span><span class="rn">IV</span> &nbsp;The Regulated Ascent — Local Branch Verdicts and the Global Breadth-to-Depth Ratio</span>
+        <span><span class="rn">V</span> &nbsp;The Ratio Engine — Why Search and Resolution Must Be Held in Balance</span>
+        <span><span class="rn">VI</span> &nbsp;The Resolution Band — Constraint Depth, Held Dimensionality, and Compression in Predictive Capacity</span>
+      </div>
+      <div style="margin-top: 18px;">Backbone · Low to High Dimensionality — The Six Core Theories</div>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
